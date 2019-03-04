@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name=viewport content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
+  <title>CPFL</title>
+  <script type="text/javascript" src="./vendor/lodash.js"></script>
+
+  <script type="text/javascript" src="./vendor/pouchdb.min.js"></script>
+  <script type="text/javascript" src="./vendor/pouchdb.authentication.min.js"></script>
+  <script type="text/javascript" src="./vendor/vue.min.js"></script>
+  <script type="text/javascript" src="./vendor/toasted.min.js"></script>
+  <script type="text/javascript" src="./vendor/fuse.min.js"></script>
+  <script type="text/javascript" src="./vendor/moment-with-locales.min.js"></script>
+  <script type="text/javascript" src="./vendor/bulma-steps.min.js"></script>
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+  
+  <link href="./vendor/bulma.min.css" rel="stylesheet" type="text/css">
+  
+  <link href="./styles/styles.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+  <div id="__template_Inspecao" class="__router_template">
+
+    <div class="box">
+      <div>
+        <h5 class="title is-5">{{desc2}}</h5>
+      </div>
+      <br><br>
+
+      <div class="field is-horizontal">
+
+        <div class="field-label is-normal">
+          <label class="label">{{desc}}</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <label class="radio">
+                <input type="radio" name="answer">
+                Ok
+              </label>
+              <label class="radio">
+                <input type="radio" name="answer">
+                Com problemas
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label">Observações</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <textarea class="textarea" placeholder="Digite aqui..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="button is-primary is-large">Fotografar</a>
+      
+    </div>
+
+
+  </div>
+
+  <!----------------------------------------------------------------
+    App
+  ------------------------------------------------------------------>
+
+  <div id="app">
+
+    <!----------------------------------------------------------------
+      AppNav bar
+    ------------------------------------------------------------------>
+
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item">
+          <img src="./src/logo-cpfl-energia.png" width="70" height="71">
+        </a>
+
+        <a role="button" class="navbar-burger burger" v-bind:class="burgerActive ? 'is-active': ''" @click="burgerActive = !burgerActive" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div id="navbarBasicExample" class="navbar-menu" v-bind:class="burgerActive ? 'is-active': ''">
+        <div class="navbar-start" @click="burgerActive = false">
+
+          <a
+            class="navbar-item" @click="novoTeste" v-bind:class="aba === 'teste' ? 'is-active': ''">
+            Novo teste
+          </a>
+
+          <a
+            class="navbar-item" @click="aba = 'dashboard'" v-bind:class="aba === 'dashboard' ? 'is-active': ''">
+            Dashboard
+          </a>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              
+            </a>
+
+            <div class="navbar-dropdown">
+              <a class="navbar-item">
+                Usuários
+              </a>
+              <hr class="navbar-divider">
+              <a class="navbar-item">
+                Sair
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </nav>
+
+
+
+    <div class="container">
+
+      <div class="steps" id="stepsDemo" v-if="aba === 'dashboard'">
+        dashboard...
+      </div>
+
+      <div class="steps" id="stepsDemo" v-if="aba === 'teste'">
+
+        <div v-for="(item, index) in steps" class="step-item" v-bind:class="{ 'is-active': index <= stepIndex, 'is-success': index === steps.length-1 }">
+          <div class="step-marker">{{index}}</div>
+          <div class="step-details">
+            <p class="step-title">{{item}}</p>
+          </div>
+        </div>
+
+        <div class="steps-actions">
+          <div class="steps-action">
+            <a data-nav="previous" class="button is-primary" :disabled="ehPrimeiro" @click="anterior">Voltar</a>
+          </div>
+          <div class="steps-action">
+            <a data-nav="next" class="button is-primary" :disabled="ehUltimo" @click="proximo">Proximo</a>
+          </div>
+        </div>
+
+        <div class="steps-content">
+          <!-- ID Unidade -->
+          <div class="step-content has-text-centered" v-bind:class="step === 'ID Unidade' ? 'is-active' : ''">
+            <div class="field">
+              <a class="button is-large" @click="localizacao = true">Obter Localização</a>
+            </div>
+            <img v-if="localizacao" src="./gps.png">
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label" v-model="nomeResponsavel">Nome do responsável</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input class="input" type="text" name="">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inspeções preliminares -->
+
+          <div class="step-content has-text-centered" v-bind:class="step === 'Inspeções Preliminares' ? 'is-active' : ''">
+
+            <inspecao desc="Estado de conservação" desc2="Inspecionar visualmente o poste da tomada de energia desde a linha de terra atéo topo, verificando o estado de conservação"></inspecao>
+
+            <inspecao desc="Estado de conservação" desc2="Inspecionar visualmente o poste e/ou a estrutura de sustentação do transformador (cubículo) desde a linha de terra até o topo, verificando o estado de conservação"></inspecao>
+
+            <inspecao desc="Estado da caixa" desc2="Inspecionar visualmente a caixa de medição"></inspecao>
+
+            <inspecao desc="Condições entrada de energia" desc2="Inspecionar as condições técnicas da entrada de energia"></inspecao>
+
+
+          </div>
+
+          <!-- Conexão Instrumentos -->
+
+          <div class="step-content has-text-centered" v-bind:class="step === 'Conexão Instrumentos' ? 'is-active' : ''">
+
+
+          <div class="box">
+            <div>
+              <h5 class="title is-5">Testar ausência de tensão nas partes metálicas da caixa de medição ou caixa de proteção;</h5>
+            </div>
+            <br>
+            <label class="checkbox">
+              <input type="checkbox">
+              Ok, sem tensão
+            </label>
+            
+          </div>
+
+          <inspecao desc="Condições dos lacres" desc2="Inspecionar os lacres e sua conformidade em todos os pontos de lacre da medição"></inspecao>
+
+
+          <div class="box">
+            <h5 class="title is-5">Revisar conexões da ligação dos equipamentos de medição, conforme diagrama:</h5>
+            <img src="./conn.jpg">
+            <label class="checkbox">
+              <input type="checkbox">
+              Ok, ligação correta
+            </label>
+          </div>
+
+          <inspecao desc="Condições da caixa de proteção" desc2="Inspecionar a existência de irregularidades na caixa de proteção;"></inspecao>
+
+          </div>
+
+          <!-- Teste de giro e Kd/Kh -->
+
+          <div class="step-content has-text-centered" v-bind:class="step === 'Teste de giro e Kd/Kh' ? 'is-active' : ''">
+            <a class="button is-link is-large" :disabled="executandoTeste" @click="executarTesteAutomatico">{{msgTeste}}</a>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th><abbr title="Etapa">Etapa</abbr></th>
+                  <th>Leitura antes do medidor (kWh)</th>
+                  <th>Leitura medidor sob testes (kWh)</th>
+                  <th>Leitura após o medidor (kWh)</th>
+                  <th>Imagem do display</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Início</th>
+                  <td><a class="button is-white" v-bind:class="executandoTesteAntes ? 'is-loading' : ''" disabled>{{a1}}</a></td>
+                  <td><a class="button is-white" v-bind:class="executandoTesteAntes ? 'is-loading' : ''" disabled>{{a2}}</a></td>
+                  <td><a class="button is-white" v-bind:class="executandoTesteAntes ? 'is-loading' : ''" disabled>{{a3}}</a></td>
+                  <td><a class="button is-white" v-bind:class="executandoTesteAntes ? 'is-loading' : ''" disabled></a><img v-if="!!a2" src="./src/counter.png"></td>
+                </tr>
+                <tr>
+                  <th>Fim</th>
+                  <td><a class="button is-white" v-bind:class="executandoTesteDepois ? 'is-loading' : ''" disabled>{{d1}}</a></td>
+                  <td><a class="button is-white" v-bind:class="executandoTesteDepois ? 'is-loading' : ''" disabled>{{d2}}</a></td>
+                  <td><a class="button is-white" v-bind:class="executandoTesteDepois ? 'is-loading' : ''" disabled>{{d3}}</a></td>
+                  <td><a class="button is-white" v-bind:class="executandoTesteDepois ? 'is-loading' : ''" disabled></a><img v-if="!!d2" src="./src/counter.png"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+
+          <section class="hero is-success" v-if="erro && step === 'Teste de giro e Kd/Kh'">
+            <div class="hero-body">
+              <div class="container">
+                <h1 class="title">
+                  Instalação aprovada
+                </h1>
+
+                <div>
+                  <span>Erro: </span><span class="is-success">{{erro}} % ± 1 % (dentro da tolerância)</span>
+                </div>
+
+                <div>
+                  <span>Diferença entrada e saída: </span><span>{{entradaSaidaDiff}} kWh (dentro da tolerância)</span>
+                </div>
+
+
+              </div>
+            </div>
+          </section>
+
+
+          <!-- Finalizar -->
+
+          <div class="step-content has-text-centered" v-bind:class="step === 'Finalizar' ? 'is-active' : ''">
+
+            <div>
+              <label class="checkbox">
+                <input type="checkbox">
+                Instalar no interior da CL ou CP o selo “F” na cor verde ou vermelha
+              </label>
+            </div>
+            <br>
+
+            <div>
+              <label class="checkbox">
+                <input type="checkbox">
+                  Instalar no interior da CL ou CP o selo “F” na cor verde ou vermelha
+              </label>
+            </div>
+            <br>
+
+            <div>
+              <label class="checkbox">
+                <input type="checkbox">
+                Instalar tampa de bornes, adaptador de CP e lacres conforme COM 12 em todos os pontos de lacre da medição
+              </label>
+            </div>
+            <br>
+
+            <div>
+              <a class="button is-success is-large" @click="novoTeste">Encerrar a Ordem de Serviço</a>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="steps-actions">
+          <div class="steps-action">
+            <a data-nav="previous" class="button is-primary" :disabled="ehPrimeiro" @click="anterior">Voltar</a>
+          </div>
+          <div class="steps-action">
+            <a data-nav="next" class="button is-primary" :disabled="ehUltimo" @click="proximo">Proximo</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  
+  <script type="text/javascript" src="./src/components/Inspecao.js"></script>
+  <script type="text/javascript" src="./src/app.js"></script>
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+</body>
+</html>
