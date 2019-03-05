@@ -53,7 +53,8 @@ const app = new Vue({
     novoTeste () {
       Object.keys(INITIAL_STATE).map((k) => {
         this[k] = INITIAL_STATE[k]
-      })      
+      })
+      this.aba = 'teste'
     },
     executarTesteAutomatico () {
       
