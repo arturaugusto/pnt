@@ -5,9 +5,8 @@
   <title>CPFL</title>
   <script type="text/javascript" src="./vendor/lodash.js"></script>
 
-  <script type="text/javascript" src="./vendor/pouchdb.min.js"></script>
-  <script type="text/javascript" src="./vendor/pouchdb.authentication.min.js"></script>
   <script type="text/javascript" src="./vendor/vue.min.js"></script>
+
   <script type="text/javascript" src="./vendor/toasted.min.js"></script>
   <script type="text/javascript" src="./vendor/fuse.min.js"></script>
   <script type="text/javascript" src="./vendor/moment-with-locales.min.js"></script>
@@ -22,6 +21,7 @@
 
 </head>
 <body>
+  <script type="text/javascript" src="./vendor/vue-pure-lightbox.js"></script>
 
   <div id="__template_Inspecao" class="__router_template">
 
@@ -52,20 +52,63 @@
         </div>
       </div>
 
-      <div class="field is-horizontal">
-        <div class="field-label is-normal">
-          <label class="label">Observações</label>
-        </div>
-        <div class="field-body">
-          <div class="field">
-            <div class="control">
-              <textarea class="textarea" placeholder="Digite aqui..."></textarea>
+      <div class="field is-horizontal is-grouped">
+        <p class="control is-expanded">
+          <div class="field-label is-normal">
+            <label class="label">Observações</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <textarea class="textarea" rows="2" v-model="obs" placeholder="Digite aqui..."></textarea>
+              </div>
             </div>
           </div>
-        </div>
+        </p>
+
+        <p class="control">
+          &nbsp;
+          <a class="button is-primary" @click="gravaObs">
+              <span class="icon is-small">
+                <i class="fas fa-microphone"></i>
+              </span>
+             &nbsp;Gravar
+          </a>
+        </p>
       </div>
-      <a class="button is-primary is-large">Fotografar</a>
-      
+      <a class="button is-primary is-large" @click="pegaFoto">
+        <span class="icon">
+          <i class="fas fa-camera"></i>
+        </span>
+        &nbsp;Fotografar
+      </a>
+      <br>
+
+      <ul>
+
+        <li 
+          class="section"
+          v-for="(image, index) in images" 
+          style="display: inline-block"
+        >
+          <img 
+            :src="image.link" 
+            style="height: 100px" 
+            @click="openGallery(index)"
+          >
+        </li>
+      </ul>
+
+      <lightbox
+        :images="images"
+        ref="lightbox"
+      >
+        <lightbox-default-loader slot="loader"></lightbox-default-loader>
+        <div slot="content" slot-scope="{ url: { link, alt } }">
+          <img :src="link" :alt="alt">
+        </div>
+      </lightbox>
+
     </div>
 
 
@@ -131,8 +174,63 @@
 
     <div class="container">
 
+      <!-- Dashboard -->
       <div class="steps" id="stepsDemo" v-if="aba === 'dashboard'">
-        dashboard...
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th><abbr title="Position">Pos</abbr></th>
+              <th>Team</th>
+              <th><abbr title="Played">Pld</abbr></th>
+              <th><abbr title="Won">W</abbr></th>
+              <th><abbr title="Drawn">D</abbr></th>
+              <th><abbr title="Lost">L</abbr></th>
+              <th><abbr title="Goals for">GF</abbr></th>
+              <th><abbr title="Goals against">GA</abbr></th>
+              <th><abbr title="Goal difference">GD</abbr></th>
+              <th><abbr title="Points">Pts</abbr></th>
+              <th>Qualification or relegation</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th><abbr title="Position">Pos</abbr></th>
+              <th>Team</th>
+              <th><abbr title="Played">Pld</abbr></th>
+              <th><abbr title="Won">W</abbr></th>
+              <th><abbr title="Drawn">D</abbr></th>
+              <th><abbr title="Lost">L</abbr></th>
+              <th><abbr title="Goals for">GF</abbr></th>
+              <th><abbr title="Goals against">GA</abbr></th>
+              <th><abbr title="Goal difference">GD</abbr></th>
+              <th><abbr title="Points">Pts</abbr></th>
+              <th>Qualification or relegation</th>
+            </tr>
+          </tfoot>
+          <tbody>
+            <tr>
+              <th>1</th>
+              <td><a href="" title="">Blabla</a> <strong>(C)</strong>
+              </td>
+              <td>38</td>
+              <td>23</td>
+              <td>12</td>
+              <td>3</td>
+              <td>68</td>
+              <td>36</td>
+              <td>+32</td>
+              <td>81</td>
+              <td>...</td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
+
+
+
       </div>
 
       <div class="steps" id="stepsDemo" v-if="aba === 'teste'">
@@ -140,7 +238,8 @@
         <div v-for="(item, index) in steps" class="step-item" v-bind:class="{ 'is-active': index <= stepIndex, 'is-success': index === steps.length-1 }">
           <div class="step-marker">{{index}}</div>
           <div class="step-details">
-            <p class="step-title">{{item}}</p>
+            <!--<p class="step-title">{{index + 1}}</p>-->
+            <p>{{item}}</p>
           </div>
         </div>
 
@@ -157,7 +256,12 @@
           <!-- ID Unidade -->
           <div class="step-content has-text-centered" v-bind:class="step === 'ID Unidade' ? 'is-active' : ''">
             <div class="field">
-              <a class="button is-large" @click="localizacao = true">Obter Localização</a>
+              <a class="button is-large" @click="localizacao = true">
+                <span class="icon is-small">
+                  <i class="fas fa-map-marker-alt"></i>
+                </span>
+              &nbsp; Obter Localização
+              </a>
             </div>
             <img v-if="localizacao" src="./gps.png">
             <div class="field is-horizontal">

@@ -10,6 +10,7 @@ Vue.use(Toasted, {theme: "toasted-primary",
   duration: 2000,
   iconPack: 'fontawesome'
 })
+
 moment.locale('pt-br')
 
 const app = new Vue({
@@ -39,7 +40,7 @@ const app = new Vue({
       erro: null,
       entradaSaidaDiff: 0,
       burgerActive: false,
-      aba: 'teste' //dashboard
+      aba: 'dashboard' //teste, dashboard
 
     }
   },
