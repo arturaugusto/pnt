@@ -177,51 +177,37 @@
       <!-- Dashboard -->
       <div class="steps" id="stepsDemo" v-if="aba === 'dashboard'">
 
+        <input class="input is-rounded" type="text" placeholder="Buscar..." v-model="busca">
+
         <table class="table">
           <thead>
             <tr>
-              <th><abbr title="Position">Pos</abbr></th>
-              <th>Team</th>
-              <th><abbr title="Played">Pld</abbr></th>
-              <th><abbr title="Won">W</abbr></th>
-              <th><abbr title="Drawn">D</abbr></th>
-              <th><abbr title="Lost">L</abbr></th>
-              <th><abbr title="Goals for">GF</abbr></th>
-              <th><abbr title="Goals against">GA</abbr></th>
-              <th><abbr title="Goal difference">GD</abbr></th>
-              <th><abbr title="Points">Pts</abbr></th>
-              <th>Qualification or relegation</th>
+              <th><abbr title="Ordem de serviço">OS</abbr></th>
+              <th>Horário início</th>
+              <th>Horário fim</th>
+              <th>Técnico</th>
+              <th>Erro (%)</th>
+              <th>Resultado</th>
             </tr>
           </thead>
           <tfoot>
             <tr>
-              <th><abbr title="Position">Pos</abbr></th>
-              <th>Team</th>
-              <th><abbr title="Played">Pld</abbr></th>
-              <th><abbr title="Won">W</abbr></th>
-              <th><abbr title="Drawn">D</abbr></th>
-              <th><abbr title="Lost">L</abbr></th>
-              <th><abbr title="Goals for">GF</abbr></th>
-              <th><abbr title="Goals against">GA</abbr></th>
-              <th><abbr title="Goal difference">GD</abbr></th>
-              <th><abbr title="Points">Pts</abbr></th>
-              <th>Qualification or relegation</th>
+              <th><abbr title="Ordem de serviço">OS</abbr></th>
+              <th>Horário início</th>
+              <th>Horário fim</th>
+              <th>Técnico</th>
+              <th>Erro (%)</th>
+              <th>Resultado</th>
             </tr>
           </tfoot>
           <tbody>
-            <tr>
-              <th>1</th>
-              <td><a href="" title="">Blabla</a> <strong>(C)</strong>
-              </td>
-              <td>38</td>
-              <td>23</td>
-              <td>12</td>
-              <td>3</td>
-              <td>68</td>
-              <td>36</td>
-              <td>+32</td>
-              <td>81</td>
-              <td>...</td>
+            <tr v-for="item in dataTableF">
+              <td>{{item.os}}</td>
+              <td>{{item.horario_ini}}</td>
+              <td>{{item.horario_fim}}</td>
+              <td>{{item.tecnico}}</td>
+              <td>{{item.resultado_num}}</td>
+              <td v-bind:class="{ 'is-danger': item.resultado !== 'Conforme', 'is-success': item.resultado === 'Conforme'}">{{item.resultado}}</td>              
             </tr>
           </tbody>
         </table>

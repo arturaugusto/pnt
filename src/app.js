@@ -2,6 +2,13 @@ var randomMinMax = function(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function randomDate(start, end, startHour, endHour) {
+  var date = new Date(+start + Math.random() * (end - start));
+  var hour = startHour + Math.random() * (endHour - startHour) | 0;
+  date.setHours(hour);
+  return date;
+}
+
 var INITIAL_STATE = {}
 
 window.DB_ADDR = 'https://procal.ipt.br:15984/'
@@ -15,7 +22,42 @@ moment.locale('pt-br')
 
 const app = new Vue({
   data () {
+    var dataTable = []
+
+    var horario_ini = Date.now()
+    var horario_fim = null
+
+    for (var i = 2000 - 1; i >= 0; i--) {
+      horario_fim = horario_ini + randomMinMax(20000, 21500)
+
+
+      let horario_ini_m = moment(horario_ini)
+      let horario_fim_m = moment(horario_fim)
+
+      horario_ini = horario_fim + randomMinMax(2500, 7500)
+
+      var h = horario_ini_m.hour()
+      console.log(h)
+      if (h > 8 && h < 16) {
+
+        var resultado_num = (randomMinMax(100, 1000)/100).toFixed(2)
+        let obj = {
+          os: ''+(1+i)+'/19',
+          horario_ini: horario_ini_m.format("DD/MM/YY HH:mm:ss"),
+          horario_fim: horario_fim_m.format("DD/MM/YY HH:mm:ss"),
+          tecnico: ['Artur Augusto Martins', 'Ramon Martin', 'Diego Nazare'][randomMinMax(0,2)],
+          resultado_num: resultado_num,
+          resultado: parseFloat(resultado_num) > 8 ? 'Não Conforme' : 'Conforme',
+          erro: null
+        }
+        dataTable.push(obj)
+      } else {
+        horario_ini += 200000
+      }
+      
+    }
     return {
+      busca: '',
       step: 'ID Unidade',
       steps: [
         'ID Unidade',
@@ -40,8 +82,8 @@ const app = new Vue({
       erro: null,
       entradaSaidaDiff: 0,
       burgerActive: false,
-      aba: 'dashboard' //teste, dashboard
-
+      aba: 'dashboard', //teste, dashboard,
+      dataTable: dataTable
     }
   },
   created () {
@@ -126,6 +168,11 @@ const app = new Vue({
     },
     stepIndex () {
       return this.steps.indexOf(this.step)
+    },
+    dataTableF () {
+      return this.dataTable.filter((item) => {
+        return ((item.tecnico).indexOf(this.busca) !== -1 || (item.resultado).indexOf(this.busca) !== -1)
+      })
     }
   }
 }).$mount('#app')
