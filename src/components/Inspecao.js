@@ -25,7 +25,7 @@ const Inspecao = Vue.component('inspecao', {
       if (this.desc2.indexOf('medidor') !== -1 || this.desc2.indexOf('entrada') !== -1) {
         img.link = './src/img/medidor_'+randomMinMax(1, 1)+'.jpg'
       } else if (this.desc2.indexOf('poste') !== -1) {
-        img.link = './src/img/poste_'+randomMinMax(1, 3)+'.jpg'
+        img.link = './src/img/poste_'+randomMinMax(1, 5)+'.jpg'
       } else if (this.desc2.indexOf('caixa') !== -1) {
         img.link = './src/img/caixa_'+randomMinMax(1, 3)+'.jpg'
       } else if (this.desc2.indexOf('lacre') !== -1) {

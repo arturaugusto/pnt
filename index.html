@@ -76,7 +76,7 @@
           </a>
         </p>
       </div>
-      <a class="button is-primary is-large" @click="pegaFoto">
+      <a class="button is-link is-large" @click="pegaFoto">
         <span class="icon">
           <i class="fas fa-camera"></i>
         </span>
@@ -221,7 +221,7 @@
 
       <div class="steps" id="stepsDemo" v-if="aba === 'teste'">
 
-        <div v-for="(item, index) in steps" class="step-item" v-bind:class="{ 'is-active': index <= stepIndex, 'is-success': index === steps.length-1 }">
+        <div v-for="(item, index) in steps" class="step-item" v-bind:class="{ 'is-active': index <= stepIndex, 'is-success': index > steps.length-3 }">
           <div class="step-marker">{{index}}</div>
           <div class="step-details">
             <!--<p class="step-title">{{index + 1}}</p>-->
@@ -268,13 +268,13 @@
 
           <div class="step-content has-text-centered" v-bind:class="step === 'Inspeções Preliminares' ? 'is-active' : ''">
 
-            <inspecao desc="Estado de conservação" desc2="Inspecionar visualmente o poste da tomada de energia desde a linha de terra atéo topo, verificando o estado de conservação"></inspecao>
+            <inspecao v-show="subStepIndex === 0" desc="Estado de conservação" desc2="Inspecionar visualmente o poste da tomada de energia desde a linha de terra atéo topo, verificando o estado de conservação"></inspecao>
 
-            <inspecao desc="Estado de conservação" desc2="Inspecionar visualmente o poste e/ou a estrutura de sustentação do transformador (cubículo) desde a linha de terra até o topo, verificando o estado de conservação"></inspecao>
+            <inspecao v-show="subStepIndex === 1" desc="Estado de conservação" desc2="Inspecionar visualmente o poste e/ou a estrutura de sustentação do transformador (cubículo) desde a linha de terra até o topo, verificando o estado de conservação"></inspecao>
 
-            <inspecao desc="Estado da caixa" desc2="Inspecionar visualmente a caixa de medição"></inspecao>
+            <inspecao v-show="subStepIndex === 2" desc="Estado da caixa" desc2="Inspecionar visualmente a caixa de medição"></inspecao>
 
-            <inspecao desc="Condições entrada de energia" desc2="Inspecionar as condições técnicas da entrada de energia"></inspecao>
+            <inspecao v-show="subStepIndex === 3" desc="Condições entrada de energia" desc2="Inspecionar as condições técnicas da entrada de energia"></inspecao>
 
 
           </div>
@@ -284,7 +284,7 @@
           <div class="step-content has-text-centered" v-bind:class="step === 'Conexão Instrumentos' ? 'is-active' : ''">
 
 
-          <div class="box">
+          <div v-show="subStepIndex === 0" class="box">
             <div>
               <h5 class="title is-5">Testar ausência de tensão nas partes metálicas da caixa de medição ou caixa de proteção;</h5>
             </div>
@@ -296,10 +296,10 @@
             
           </div>
 
-          <inspecao desc="Condições dos lacres" desc2="Inspecionar os lacres e sua conformidade em todos os pontos de lacre da medição"></inspecao>
+          <inspecao v-show="subStepIndex === 1" desc="Condições dos lacres" desc2="Inspecionar os lacres e sua conformidade em todos os pontos de lacre da medição"></inspecao>
 
 
-          <div class="box">
+          <div v-show="subStepIndex === 2" class="box">
             <h5 class="title is-5">Revisar conexões da ligação dos equipamentos de medição, conforme diagrama:</h5>
             <img src="./conn.jpg">
             <label class="checkbox">
@@ -308,7 +308,7 @@
             </label>
           </div>
 
-          <inspecao desc="Condições da caixa de proteção" desc2="Inspecionar a existência de irregularidades na caixa de proteção;"></inspecao>
+          <inspecao v-show="subStepIndex === 3" desc="Condições da caixa de proteção" desc2="Inspecionar a existência de irregularidades na caixa de proteção;"></inspecao>
 
           </div>
 

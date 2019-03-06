@@ -11,7 +11,6 @@ function randomDate(start, end, startHour, endHour) {
 
 var INITIAL_STATE = {}
 
-window.DB_ADDR = 'https://procal.ipt.br:15984/'
 Vue.use(Toasted, {theme: "toasted-primary", 
   position: "top-center", 
   duration: 2000,
@@ -37,7 +36,6 @@ const app = new Vue({
       horario_ini = horario_fim + randomMinMax(2500, 7500)
 
       var h = horario_ini_m.hour()
-      console.log(h)
       if (h > 8 && h < 16) {
 
         var resultado_num = (randomMinMax(100, 1000)/100).toFixed(2)
@@ -45,7 +43,7 @@ const app = new Vue({
           os: ''+(1+i)+'/19',
           horario_ini: horario_ini_m.format("DD/MM/YY HH:mm:ss"),
           horario_fim: horario_fim_m.format("DD/MM/YY HH:mm:ss"),
-          tecnico: ['Artur Augusto Martins', 'Ramon Martin', 'Diego Nazare'][randomMinMax(0,2)],
+          tecnico: ['Artur Augusto Martins', 'Ramon Martin', 'Diego Nazarre'][randomMinMax(0,2)],
           resultado_num: resultado_num,
           resultado: parseFloat(resultado_num) > 8 ? 'Não Conforme' : 'Conforme',
           erro: null
@@ -66,6 +64,14 @@ const app = new Vue({
         'Teste de giro e Kd/Kh',
         'Finalizar'
       ],
+      subSteps: {
+        'ID Unidade': 1,
+        'Inspeções Preliminares': 4,
+        'Conexão Instrumentos': 4,
+        'Teste de giro e Kd/Kh': 1,
+        'Finalizar': 1
+      },
+      subStepIndex: 0,
       localizacao: false,
       nomeResponsavel: '',
       msgTeste: 'Iniciar teste automático',
@@ -82,7 +88,7 @@ const app = new Vue({
       erro: null,
       entradaSaidaDiff: 0,
       burgerActive: false,
-      aba: 'dashboard', //teste, dashboard,
+      aba: 'teste', //teste, dashboard,
       dataTable: dataTable
     }
   },
@@ -150,13 +156,26 @@ const app = new Vue({
     },
     proximo () {
       if (this.ehUltimo) return
-      this.step = this.steps[this.stepIndex + 1]
+
       window.scrollTo(0, 0);
+      if (this.subStepIndex < this.subSteps[this.step]-1) {
+        this.subStepIndex++
+        return
+      }
+      this.subStepIndex = 0
+      this.step = this.steps[this.stepIndex + 1]
+
     },
     anterior () {
       if (this.ehPrimeiro) return
-      this.step = this.steps[this.stepIndex - 1]
+
       window.scrollTo(0, 0);
+      if (this.subStepIndex > 0) {
+        this.subStepIndex--
+        return
+      }
+      this.step = this.steps[this.stepIndex - 1]
+      this.subStepIndex = this.subSteps[this.step]-1
     }
   },
   computed: {
